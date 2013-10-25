@@ -1,0 +1,22 @@
+{
+  "name": "jasmine-where",
+  "version": "0.0.0",
+  "description": "add where() clause to jasmine, similar to cucumber scenario outline or spock example clauses",
+  "homepage" : "https://github.com/dfkaye/jasmine-where",
+  "author": {
+    "name": "david kaye (@dfkaye)",
+    "email" : "dfkaye@yahoo.com"
+  },
+  "devDependencies": {
+    "jasmine-node": "~1.0.0",
+    "browserify": "~1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dfkaye/jasmine-where.git"
+  },
+  "scripts": {
+    "test": "jasmine-node --verbose ./test/",
+    "bundle" : "browserify ./test/suite.spec.js > ./test/bundle-spec.js"
+  }
+}
