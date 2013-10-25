@@ -45,10 +45,22 @@ details
 -------
 
 [24 OCT 2013]
+
+Borrowing from rjrodger's mstring, <code>where()</code> accepts a function and 
+inspects its string value, converting the commented data-table into an array of 
+values, and using the labels as variable symbols in a new Function().
+
 Current impl runs in both jasmine 1.3.1 and jasmine 2.0.0-rc3.
 
-Using testemjs to drive tests in multiple browsers for jasmine-2.0.0 and 
-jasmine-node which uses jasmine 1.3.1 internally.
+Using jasmine-node which uses jasmine 1.3.1 internally.
+
+    jasmine-node --verbose ./suite.spec.js
+    
+Using testemjs to drive tests in multiple browsers for jasmine-2.0.0 (see how to
+[hack testem for jasmine 2](https://github.com/dfkaye/testem-jasmine2), as well 
+as jasmine-node.
+
+    testem -l jasmine-node
 
 Entire data-table with pass/fail messages is printed to the console only if an 
 expectation fails.  Reporter messages in browser still less than optimal.
