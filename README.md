@@ -53,7 +53,16 @@ jasmine-node which uses jasmine 1.3.1 internally.
 Entire data-table with pass/fail messages is printed to the console only if an 
 expectation fails.  Reporter messages in browser still less than optimal.
 
+A failed expectation will appear in your console as:
 
+     incorrect data
+     [a | b | c] : 
+     [1 | 1 | 1] (Passed)
+     [1 | 2 | x] (Expected 2 to be NaN.)
+     [4 | 2 | 4] (Passed)
+     [4 | 8 | 8] (Passed)
+
+     
 TODO
 ----
 
