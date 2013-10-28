@@ -6,6 +6,10 @@ __IN PROGRESS__
 Attempt to add where() clause to Jasmine, similar to Cucumber scenario-outline 
 or Spock example clauses.
 
+Partly inspired by JP Castro's (@jphpsf)
+[DRYing Up Your JavaScript Jasmine Tests With the Data Provider Pattern]
+(http://blog.jphpsf.com/2012/08/30/drying-up-your-javascript-jasmine-tests)
+
 
 justify
 -------
@@ -52,6 +56,13 @@ the commented data-table into an array of values, uses the labels as variables
 or symbols in a new Function().
 
 
+debating
+--------
+
+Each where() accepts only one expectation clause at the moment -- not sure it's 
+a good idea to support multiple expects in a single where... 
+
+
 versions
 --------
 
@@ -72,20 +83,14 @@ as jasmine-node.
 output
 ------
 
-When an expectation fails, the whole data-table is printed to the console, along 
-with pass/fail messages for each row.  
+A passing where() clause has no effect on the usual jasmine output. 
 
-A failed expectation will appear in your console as:
+When an expectation fails, the data-table labels plus the row of values for the 
+current expectation are added to the *current* failing item. Every failed 
+expectation in a where() clause will appear as:
 
-     incorrect data
      [a | b | c] : 
-     [1 | 1 | 1] (Passed)
      [1 | 2 | x] (Expected 2 to be NaN.)
-     [4 | 2 | 4] (Passed)
-     [4 | 8 | 8] (Passed)
-
-A passing where() clause has no effect on the usual jasmine output.  The reporter 
-messages in browser still less than optimal.
 
      
 TODO
@@ -93,8 +98,8 @@ TODO
 
 + figure out which clauses do _not_ support this
 + possible alternative APIs/tests (describe -> where -> it, e.g.)
-+ better reporter message hooks (html reporter overrides)
++ <del>better reporter message hooks (html reporter overrides)</del>
 + asynchronous tests (?)
 + more code cleanup
-+ better doc
++ <del>better doc</del>
 + NPM

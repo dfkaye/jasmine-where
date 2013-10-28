@@ -1,21 +1,5 @@
 // jasmine-where.js
 
-/*
-//http://blog.jphpsf.com/2012/08/30/drying-up-your-javascript-jasmine-tests
-
-function using(name, values, func){
-  for (var i = 0, count = values.length; i < count; i++) {
-    if (Object.prototype.toString.call(values[i]) !== '[object Array]') {
-        values[i] = [values[i]];
-    }
-    func.apply(this, values[i]);
-    jasmine.currentEnv_.currentSpec.description += ' (with "' + name + '" using ' + 
-                                                    values[i].join(', ') + ')';
-  }
-}
-*/
-
-
 (function () {
 
   /**
@@ -26,14 +10,12 @@ function using(name, values, func){
   } else if (typeof window != "undefined") {
     window.where = where;
   }
-  
-  
+    
   /**
    * CONSTANTS
    */
   var SEP = '|';
   var PAD = ' ' + SEP + ' ';
-  
   
   /**
    * GLOBAL WHERE GRABS IT OFF THE JAZZ ENVIRONMENT
@@ -42,12 +24,15 @@ function using(name, values, func){
     return jasmine.getEnv().where(fn);
   };
   
-  
   ////////////////////////////////////////////////////////////////////////////////////////
-  // where() - defined on the jazz environment in imitation of the jasmine lib src.
-  //
-  // accepts only a function with a commented data-table and an expectation.
+  // main api method defined on the jazz environment in imitation of the jasmine lib src.
   // 
+  // where() accepts only a function with a commented data-table and an expectation.
+  //
+  // returns true if all expectations pass, false if at least one expectation fails.
+  //
+  // detail:
+  //
   //    it('description', function () {
   //      where(function(){/* 
   //          a  |  b  |  c
@@ -64,25 +49,32 @@ function using(name, values, func){
   //
   // entire data-table with pass/fail messages is printed to the console only if an 
   // expectation fails.
+  //
   ////////////////////////////////////////////////////////////////////////////////////////
   jasmine.getEnv().constructor.prototype.where = function (fn) {
-        
-    var parseResult = parseFn(fn);
-    var values = parseResult.table;
-    var fnBody = parseResult.body;
+
+    if (typeof fn != 'function') {
+      throw new Error('where(param) expected param should be a function');
+    }
+    
+    var fnBody = getFnBody(fn);
+    var values = parseFnBody(fnBody);
     var labels = values[0];
     
     /**
-     * labels array is toString'd so they became param symbols in the new Function
-     * fnBody is what's left of the original function, mainly the expectation.
+     * {labels} array is toString'd so the values became param symbols in the new Function.
+     * {fnBody} is what's left of the original function, mainly the expectation.
      */
     var fnTest = new Function(labels.toString(), fnBody);
 
     var currentSpec = jasmine.getEnv().currentSpec;
-    var result = currentSpec.result || currentSpec.results_;
-    var description = result.description + '\n [' + labels.join(PAD) + '] : ';
-    var failedCount = 0;
+    var result = /* jasmine 2.x.x. */ currentSpec.result || 
+                 /* jasmine 1.x.x. */ currentSpec.results_;
     
+    var failedCount = 0;
+    //var items = [];
+    var trace = '\n [' + labels.join(PAD) + '] : ';
+
     var item, message;
         
     for (var i = 1; i < values.length; ++i) {
@@ -91,52 +83,78 @@ function using(name, values, func){
       
       fnTest.apply(currentSpec, values[i]);
 
-      // collect any failed expectation
+      // TODO - extract method, perhaps...
+      
+      // collect any failed expectations 
       if (result.failedExpectations && result.failedExpectations.length) {
       
-        // jasmine 2.x.x.
-        if (failedCount < result.failedExpectations.length) {
+        /*
+         * jasmine 2.x.x.
+         */
         
+        if (failedCount < result.failedExpectations.length) {
           failedCount += 1;
-          message = result.failedExpectations[failedCount - 1].message;
+          item = result.failedExpectations[failedCount - 1];
+          message = item.message;
+          item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
+          //items.push(item);
         }
         
       } else if (result.items_) {
       
-        // jasmine 1.x.x.
+        /*
+         * jasmine 1.x.x.
+         */
+        
         item = result.items_[result.items_.length - 1];
         
         if (item && !item.passed_) {
           failedCount += 1;
           message = item.message;
+          item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
+          //items.push(item);
         }
       }
       
-      description += '\n [' + values[i].join(PAD) + '] (' + message + ')';
+      //trace += '\n [' + values[i].join(PAD) + '] (' + message + ')';
     }    
 
-    // print only if there were failed expectations, if we can
-    if (failedCount) {
-      result.description = description;
-      typeof console == 'undefined' || console.log(result.description);
-    }
+    // print only if there were failed expectations where we can
+    // if (failedCount) {
+    
+      // result.description += trace;
+      // typeof console == 'undefined' || console.log(result.description);
+      
+      // for (var i = 0; i < items.length; ++i) {
+        // items[i].message += trace;
+      // }
+    // }
+    
+    // not necessary but may use for hook to control reporter
+    return failedCount === 0;
   };
   
+  /**
+   * private method
+   * getFnBody takes a function or string and returns the body of the function.
+   */
+  function getFnBody(fn) {
+  
+    var fnBody = fn.toString().replace(/\s*function[^\(]*[\(][^\)]*[\)][^\{]*{/,'')
+                              .replace(/[\}]$/, '');
+                 
+    return fnBody;
+  }
   
   /**
-   * parseFn takes a function and extracts the data table labels and values.
+   * private method
+   * parseFn takes a function or string and extracts the data table labels and values.
    * returns a result object with {body} the function as a string and {table} data array.
    */
-  function parseFn(fn) {
+  function parseFnBody(fnBody) {
   
-    if (typeof fn != 'function') {
-      throw new Error('where(param) expected param should be a function');
-    }
-    
-    var fs = fn.toString();
+    var fs = fnBody.toString();
     var table = fs.match(/\/\*[^\*]+\*\//);
-    var body = fs.replace(table, '').replace(/\s*function[^\(]*[\(][^\)]*[\)][^\{]*{/,'')
-                 .replace(/[\}]$/, '');
     var data = table[0].replace(/[\/\*]*[\r]*[\*\/]*/g, '').split('\n');
     var rows = [];
     
@@ -155,7 +173,6 @@ function using(name, values, func){
         }
         
         row = row.split(SEP);
-        rows.push(row);
 
         if (typeof size != 'number') {
           size = row.length;
@@ -165,6 +182,8 @@ function using(name, values, func){
           throw new Error('where() data table has unbalanced rows; expected ' + size + 
                           ' but was ' + row.length);
         }
+        
+        rows.push(row);        
       }
     }
     
@@ -173,6 +192,7 @@ function using(name, values, func){
                       rows.length);
     }
     
-    return { body: body, table: rows };
+    return rows;
   }
+  
 }());

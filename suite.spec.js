@@ -90,16 +90,28 @@ describe('jasmine-where', function () {
     });
 
     describe('should fail with', function () {
+    
+      beforeEach(function() {
+        // mock expectation
+        
+      });
+      
+      afterEach(function() {
+      
+      });
+      
       it('incorrect data', function () {
-        where(function(){/* 
+        var pass = where(function(){/* 
             a  |  b  |  c
             1  |  1  |  1
             1  |  2  |  x
             4  |  2  |  4
-            4  |  8  |  8
+            4  |  8  |  k
           */
           expect(Math.max(a, b)).toBe(Number(c));
         });
+
+        expect(pass).toBe(false);
       });
 
       it('incorrect expectation', function () {
@@ -113,6 +125,21 @@ describe('jasmine-where', function () {
           expect(Math.max(a, b)).toBe(Number(c));
         });
       });
+      
+      
+      // add support for multiple expectations in a single where clause???
+      // it('multiple expectations', function () {
+        // where(function(){/* 
+            // a  |  b  |  c
+            // 1  |  1  |  1
+            // 1  |  2  |  2
+            // 4  |  2  |  4
+            // 4  |  8  |  7
+          // */
+          // expect(Number(a) + Number(b)).toEqual(Number(c));
+          // expect(Number(c) - Number(b)).toEqual(Number(a));
+        // });
+      // });      
     });
     
   });
