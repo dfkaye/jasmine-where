@@ -1,14 +1,14 @@
 jasmine-where
 =============
 
-__IN PROGRESS__
+Provide a where() clause for data-table support to Jasmine, similar to 
+Cucumber's scenario-outline or Spock example clauses.
 
-Attempt to add where() clause to Jasmine, similar to Cucumber scenario-outline 
-or Spock example clauses.
-
-Partly inspired by JP Castro's (@jphpsf)
-[DRYing Up Your JavaScript Jasmine Tests With the Data Provider Pattern]
-(http://blog.jphpsf.com/2012/08/30/drying-up-your-javascript-jasmine-tests)
+Partly inspired by:
++ JP Castro's (@jphpsf)
+    [DRYing Up Your JavaScript Jasmine Tests With the Data Provider Pattern]
+    (http://blog.jphpsf.com/2012/08/30/drying-up-your-javascript-jasmine-tests)
++ Richard Rodger's [mstring](https://github.com/rjrodger/mstring)
 
 
 justify
@@ -55,16 +55,12 @@ Borrowing from Richard Rodger's [mstring](https://github.com/rjrodger/mstring),
 the commented data-table into an array of values, uses the labels as variables 
 or symbols in a new Function().
 
-
-debating
---------
-
-Each where() accepts only one expectation clause at the moment -- not sure it's 
-a good idea to support multiple expects in a single where... 
+Each where() clause works best with only one expectation clause at the moment (still debating 
+whether it's worth supporting multiple expects in a single where()). 
 
 
-versions
---------
+jasmine versions supported
+--------------------------
 
 Current implementation runs in both jasmine 1.3.1 and jasmine 2.0.0-rc3.
 
@@ -74,8 +70,9 @@ Using jasmine-node which uses jasmine 1.3.1 internally.
     
 Using [testemjs](https://github.com/airportyh/testem) to drive tests in multiple 
 browsers for jasmine-2.0.0 (see how to 
-[hack testem for jasmine 2](https://github.com/dfkaye/testem-jasmine2), as well 
-as jasmine-node.
+[hack testem for jasmine 2](https://github.com/dfkaye/testem-jasmine2)), as well 
+as jasmine-node.  The following command uses a custom launcher for jasmine-node 
+in testem:
 
     testem -l jasmine-node
 
