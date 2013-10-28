@@ -2,11 +2,11 @@
   "framework": "jasmine2",
   "src_files" : [
     "jasmine-where.js",
-    "**.spec.js"
+    "./test/*.js"
   ],
   "launchers": {
     "jasmine-node": {
-      "command": "jasmine-node --verbose ./suite.spec.js"
+      "command": "jasmine-node --verbose ./test/suite.spec.js"
     }
   }  
 }

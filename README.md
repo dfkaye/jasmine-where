@@ -66,7 +66,7 @@ Current implementation runs in both jasmine 1.3.1 and jasmine 2.0.0-rc3.
 
 Using jasmine-node which uses jasmine 1.3.1 internally.
 
-    jasmine-node --verbose ./suite.spec.js
+    jasmine-node --verbose ./test/suite.spec.js
     
 Using [testemjs](https://github.com/airportyh/testem) to drive tests in multiple 
 browsers for jasmine-2.0.0 (see how to 
