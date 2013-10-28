@@ -46,24 +46,34 @@ details
 
 [24 OCT 2013]
 
-Borrowing from rjrodger's mstring, <code>where()</code> accepts a function and 
-inspects its string value, converting the commented data-table into an array of 
-values, and using the labels as variable symbols in a new Function().
+Borrowing from Richard Rodger's [mstring](https://github.com/rjrodger/mstring), 
+<code>where()</code> accepts a function and inspects its string value, converts 
+the commented data-table into an array of values, uses the labels as variables 
+or symbols in a new Function().
 
-Current impl runs in both jasmine 1.3.1 and jasmine 2.0.0-rc3.
+
+versions
+--------
+
+Current implementation runs in both jasmine 1.3.1 and jasmine 2.0.0-rc3.
 
 Using jasmine-node which uses jasmine 1.3.1 internally.
 
     jasmine-node --verbose ./suite.spec.js
     
-Using testemjs to drive tests in multiple browsers for jasmine-2.0.0 (see how to
+Using [testemjs](https://github.com/airportyh/testem) to drive tests in multiple 
+browsers for jasmine-2.0.0 (see how to 
 [hack testem for jasmine 2](https://github.com/dfkaye/testem-jasmine2), as well 
 as jasmine-node.
 
     testem -l jasmine-node
 
-Entire data-table with pass/fail messages is printed to the console only if an 
-expectation fails.  Reporter messages in browser still less than optimal.
+    
+output
+------
+
+When an expectation fails, the whole data-table is printed to the console, along 
+with pass/fail messages for each row.  
 
 A failed expectation will appear in your console as:
 
@@ -74,12 +84,17 @@ A failed expectation will appear in your console as:
      [4 | 2 | 4] (Passed)
      [4 | 8 | 8] (Passed)
 
+A passing where() clause has no effect on the usual jasmine output.  The reporter 
+messages in browser still less than optimal.
+
      
 TODO
 ----
 
 + figure out which clauses do _not_ support this
-+ asynchronous tests
++ possible alternative APIs/tests (describe -> where -> it, e.g.)
++ better reporter message hooks (html reporter overrides)
++ asynchronous tests (?)
 + more code cleanup
 + better doc
 + NPM
