@@ -136,8 +136,13 @@ describe('jasmine-where', function () {
      * Use these tests to intercept result messages set by jasmine, particularly on specs
      * that fail.
      */
-    describe('intercepted jasmine result', function () {
-    
+
+    describe('intercepting expected failing specs', function () {
+
+      /*
+       * set up vars for each iteration first
+       */
+
       var currentSpec;
       var result;
       
@@ -146,7 +151,7 @@ describe('jasmine-where', function () {
 
       var addResult;
       var addExpectationResult;
-      var onAfter;
+      var restore;
       
       
       beforeEach(function() {
@@ -155,6 +160,7 @@ describe('jasmine-where', function () {
          *  Set up an interceptor for add-results methods.
          *  Call restore() to un-set these before expect() calls after the where clause.
          */
+         
         currentSpec = jasmine.getEnv().currentSpec;
         
         result = /* jasmine 2.x.x. */ currentSpec.result || 
