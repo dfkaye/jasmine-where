@@ -89,14 +89,42 @@ expectation in a where() clause will appear as:
      [a | b | c] : 
      [1 | 2 | x] (Expected 2 to be NaN.)
 
+
+return values
+-------------
+
+You can capture the generated data table, including the labels, as the return 
+value of the where clause for post-where assertions:
+
+    it('returns data', function () {
+      
+        var values = where(function(){/* 
+            a  |  b  |  c
+            1  |  1  |  1
+            1  |  2  |  x
+            3  |  2  |  3
+            5  |  3  |  5.01
+          */
+          
+          // within-where
+          expect(Math.max(a, b)).toMatch(c);
+          
+        });
+        
+        
+        // post-where
+        expect(values[2][2]).toBe('X');
+        
+    });
      
 TODO
 ----
-
-+ figure out which clauses do _not_ support this
++ tests for returnValues in post-where() assertions
++ tests for comments
++ at least one asynchronous test
++ figure out which clauses do _not_ support this ('it' works best)
 + possible alternative APIs/tests (describe -> where -> it, e.g.)
 + <del>better reporter message hooks (html reporter overrides)</del>
-+ asynchronous tests (?)
-+ more code cleanup
-+ <del>better doc</del>
-+ NPM
++ <del>more code cleanup</del> (ongoing)
++ <del>better doc</del> (ongoing)
++ NPM publish

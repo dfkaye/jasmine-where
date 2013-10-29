@@ -149,6 +149,7 @@ describe('jasmine-where', function () {
             3  |  2  |  3
             5  |  3  |  5.01
           */
+          // within-where
           expect(Math.max(a, b)).toMatch(c);
         });
         
