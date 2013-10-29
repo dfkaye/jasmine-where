@@ -1,8 +1,12 @@
 jasmine-where
 =============
 
-Provide a where() clause for data-table support to Jasmine, similar to 
-Cucumber's scenario-outline or Spock example clauses.
+Provide a `where()` clause for data-table support to the 
+[Jasmine BDD test framework](https://github.com/pivotal/jasmine), similar to 
+Cucumber's scenario-outline 
+[Examples](https://github.com/cucumber/cucumber/wiki/Scenario-Outlines) 
+or Spock's 
+[where blocks](https://code.google.com/p/spock/wiki/SpockBasics#Where_Blocks).
 
 Partly inspired by:
 + JP Castro's (@jphpsf)
@@ -48,15 +52,13 @@ than this:
 details
 -------
 
-[24 OCT 2013]
-
 Borrowing from Richard Rodger's [mstring](https://github.com/rjrodger/mstring), 
-<code>where()</code> accepts a function and inspects its string value, converts 
+`where()` accepts a function and inspects its string value, converts 
 the commented data-table into an array of values, uses the labels as variables 
 or symbols in a new Function().
 
-Each where() clause works best with only one expectation clause at the moment (still debating 
-whether it's worth supporting multiple expects in a single where()). 
+Each `where()` clause works best with only one expectation clause at the moment (still debating 
+whether it's worth supporting multiple expects in a single `where()`). 
 
 
 jasmine versions supported
@@ -80,11 +82,11 @@ in testem:
 output
 ------
 
-A passing where() clause has no effect on the usual jasmine output. 
+A passing `where()` clause has no effect on the usual jasmine output. 
 
 When an expectation fails, the data-table labels plus the row of values for the 
 current expectation are added to the *current* failing item. Every failed 
-expectation in a where() clause will appear as:
+expectation in a `where()` clause will appear as:
 
      [a | b | c] : 
      [1 | 2 | x] (Expected 2 to be NaN.)
@@ -119,7 +121,7 @@ value of the where clause for post-where assertions:
      
 TODO
 ----
-+ tests for returnValues in post-where() assertions
++ tests for returnValues in post-`where()` assertions
 + tests for comments
 + at least one asynchronous test
 + figure out which clauses do _not_ support this ('it' works best)
