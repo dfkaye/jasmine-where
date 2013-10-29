@@ -26,37 +26,7 @@ describe('jasmine-where', function () {
        }).toThrow();
     });
     
-    it('should throw when function has no data-table comment', function () {
-      expect(function () {
-        where(function(){});
-       }).toThrow();
-    });
-
-    it('should throw when function has only one row in data-table', function () {
-      expect(function () {
-        where(function(){/* 
-          a  |  b  |  c 
-        */});
-       }).toThrow();
-    });
     
-    it('should throw when function has un-separated items in data-table', function () {
-      expect(function () {
-        where(function(){/* 
-          a  |  b  |  c
-          6  
-        */});
-       }).toThrow();
-    });
-    
-    it('should throw when function has unbalanced data-table', function () {
-      expect(function () {
-        where(function(){/* 
-          a  |  b  |  c
-          1  |  2  |
-        */});
-       }).toThrow();
-    });
     
     it('should not throw if missing expectation', function () {
       expect(function () {
@@ -80,8 +50,93 @@ describe('jasmine-where', function () {
       });
     });
 
+
+    describe('a malformed data table', function () {
+
+      it('should throw when function has no data-table comment', function () {
+        expect(function () {
+          where(function(){});
+         }).toThrow();
+      });
+      
+      it('should throw when function has no data-table rows', function () {
+        expect(function () {
+          where(function(){/*
+          */});
+         }).toThrow();
+      });
+      
+      it('should throw when function has only one row in data-table', function () {
+        expect(function () {
+          where(function(){/* 
+            a  |  b  |  c 
+          */});
+         }).toThrow();
+      });
+
+      it('should throw with duplicate labels', function () {
+        expect(function () {
+          where(function(){/*
+            a | a
+            0 | 1
+            */
+          });
+        }).toThrow();
+      });
+       
+      it('should throw when function has un-separated items in data-table', function () {
+        expect(function () {
+          where(function(){/* 
+            a  |  b  |  c
+            6  
+          */});
+         }).toThrow();
+      });
+      
+      it('should throw when missing last value', function () {
+        expect(function () {
+          where(function(){/* 
+            a  |  b  |  c
+            1  |  2  |
+          */});
+        }).toThrow();
+      });
+       
+      it('should throw when missing first value', function () {
+        expect(function () {
+          where(function(){/* 
+            a  |  b  |  c
+               |  1  | 2
+          */});
+        }).toThrow();
+      });
+       
+      it('should throw when missing inner value', function () {
+        expect(function () {
+          where(function(){/* 
+            a  |  b  |  c
+            1  |     | 2
+          */});
+        }).toThrow();
+      });
+      
+      it('should throw when missing separator in data-table', function () {
+        expect(function () {
+          where(function(){/* 
+            a  |  b  |  c
+            6     4  |  0
+          */});
+         }).toThrow();
+      });
+      
+    });
     
-    describe('should fail (but suppress stack trace) with', function () {
+    
+    /*
+     * Use these tests to intercept result messages set by jasmine, particularly on specs
+     * that fail.
+     */
+    describe('intercepted jasmine result', function () {
     
       var currentSpec;
       var result;
@@ -140,7 +195,7 @@ describe('jasmine-where', function () {
 
       // TODO EXTRACT TESTS FOR THE RETURN VALUES MATRIX POST-WHERE ASSERTIONS
       
-      it('incorrect data', function () {
+      it('should return messages for incorrect data', function () {
       
         var values = where(function(){/* 
             a  |  b  |  c
@@ -162,7 +217,7 @@ describe('jasmine-where', function () {
       });
 
       
-      it('incorrect expectation', function () {
+      it('should return messages for incorrect expectation', function () {
       
         where(function(){/* 
             a  |  b  |  c
@@ -183,22 +238,17 @@ describe('jasmine-where', function () {
     
     });
     
-    
-    
     /*
      * Use these tests to see displayed stack traces and results messages for failed specs.
      */
-    describe('non-intercepted tests', function () {
-    
-      it('fails with table message', function () {
-        where(function(){/*
-          left | right
-          hand | hand
+    describe('non-intercepted failing tests', function () {
+
+      it('should print empty table message in stack trace and spec', function () {
+        var values = where(function(){/*
           */
-          expect(left).not.toBe(right);
         });
-       });
-       
+      });
+      
     });
     
   });

@@ -148,30 +148,49 @@
     for (var i = 0; i < data.length; i++) {
     
       row = data[i].replace(/\b[\s*]/,'').replace(/(\s)*\b/, '');
-      
+
       if (row.match(/\S+/)) {
-      
+
         row = row.replace(/\s+/g, '');
         
-        if (row.charAt(row.length - 1) == SEP) {
-          throw new Error('where() data table has unbalanced row: ' + row);
+        // empty right column
+        if (row.charAt(0) == SEP || row.charAt(row.length - 1) == SEP || row.match(/\|\|/)) {
+            throw new Error('where() data table has unbalanced rows: ' + row);
         }
         
         row = row.split(SEP);
 
+        // first data row (labels)
         if (typeof size != 'number') {
+        
           size = row.length;
+          
+          // no duplicates
+          (function (row) {
+            var visited = {};
+            var label;
+            for (var j = 0; j < row.length; ++j) {
+              label = row[j];
+              if (visited[label]) {
+                throw new Error('where() data table contains duplicate label \'' + label +
+                                '\' in [' + row.join(', ') + ']');
+              }
+              visited[label] = 1;
+            }
+          }(row));
         }
 
+        // data row length
         if (size !== row.length) {
           throw new Error('where() data table has unbalanced rows; expected ' + size + 
                           ' but was ' + row.length);
         }
-        
+      
         rows.push(row);        
       }
     }
     
+    // num rows
     if (rows.length < 2) {
       throw new Error('where() data table should contain at least 2 rows but has ' + 
                       rows.length);
