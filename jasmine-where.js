@@ -29,7 +29,7 @@
   // 
   // where() accepts only a function with a commented data-table and an expectation.
   //
-  // returns true if all expectations pass, false if at least one expectation fails.
+  // returns the data table values array for further use in other expectations.
   //
   // detail:
   //
@@ -72,7 +72,6 @@
                  /* jasmine 1.x.x. */ currentSpec.results_;
     
     var failedCount = 0;
-    //var items = [];
     var trace = '\n [' + labels.join(PAD) + '] : ';
 
     var item, message;
@@ -97,7 +96,6 @@
           item = result.failedExpectations[failedCount - 1];
           message = item.message;
           item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
-          //items.push(item);
         }
         
       } else if (result.items_) {
@@ -112,26 +110,13 @@
           failedCount += 1;
           message = item.message;
           item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
-          //items.push(item);
         }
       }
       
-      //trace += '\n [' + values[i].join(PAD) + '] (' + message + ')';
     }    
-
-    // print only if there were failed expectations where we can
-    // if (failedCount) {
     
-      // result.description += trace;
-      // typeof console == 'undefined' || console.log(result.description);
-      
-      // for (var i = 0; i < items.length; ++i) {
-        // items[i].message += trace;
-      // }
-    // }
-    
-    // not necessary but may use for hook to control reporter
-    return failedCount === 0;
+    // use these in further assertions 
+    return values;
   };
   
   /**
