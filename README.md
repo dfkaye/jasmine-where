@@ -101,7 +101,7 @@ value of the where clause for post-where assertions:
         var values = where(function(){/* 
             a  |  b  |  c
             1  |  1  |  1
-            1  |  2  |  x
+            1  |  2  |  two
             3  |  2  |  3
             5  |  3  |  5.01
           */
@@ -113,7 +113,7 @@ value of the where clause for post-where assertions:
         
         
         // post-where
-        expect(values[2][2]).toBe('X');
+        expect(values[2][2]).toBe('two');
         
     });
      
