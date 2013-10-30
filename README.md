@@ -139,7 +139,7 @@ TODO
 + <del>push jasmine-intercept</del>
 + <del>tests for returnValues in post-`where()` assertions</del>
 + <del>tests for comments</del>
-+ at least one asynchronous test
++ <del>at least one asynchronous test</del>(done)
 + <del>figure out which clauses do _not_ support this ('it' works best)</del>
 + <del>possible alternative APIs/tests (describe -> where -> it, e.g.)</del>
 + <del>better reporter message hooks (html reporter overrides)</del>

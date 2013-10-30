@@ -194,6 +194,56 @@ describe('jasmine-where', function () {
     });
     
     
+    describe('asynchronous tests', function () {
+    
+      it('should throw when missing separator in data-table', function (done) {
+      
+        setTimeout(function () {
+        
+          expect(function () {
+            where(function(){/* 
+              a  |  b  |  c
+              6     4  |  0
+            */});
+           }).toThrow();
+           
+           done();
+           
+        }, 500);
+        
+      });
+      
+      
+      it('should work with intercept', function (done) {
+
+        setTimeout(function () {
+        
+          intercept();
+          
+          where(function(){/* 
+              a  |  b  |  c
+              1  |  1  |  1
+              1  |  2  |  2
+              4  |  2  |  4
+              4  |  8  |  7
+            */
+            expect(Math.max(a, b)).toBe(Number(c));
+          });
+          
+          intercept.clear();
+          
+          expect(intercept.failMessages.length).toBe(1);
+          expect(intercept.passMessages.length).toBe(3);
+          expect(intercept.failMessages[0]).toBe("Expected 8 to be 7.");
+          
+          done();
+          
+        }, 500);
+      });
+
+      
+    });
+    
     /*
      * Use these tests to see displayed stack traces and results messages for failed specs.
      */
