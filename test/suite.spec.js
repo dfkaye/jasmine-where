@@ -128,7 +128,7 @@ describe('jasmine-where', function () {
           */});
          }).toThrow();
       });
-      
+
     });
     
     
@@ -142,63 +142,77 @@ describe('jasmine-where', function () {
       /*
        * set up vars for each iteration first
        */
+      var intercept = (function() {
+        
+        var currentSpec;
+        var result;
+        
+        var passMessages;
+        var failMessages;
 
-      var currentSpec;
-      var result;
-      
-      var passCount;
-      var failMessages;
+        var addResult;
+        var addExpectationResult;
+        var clear;
+        
+        function intercept() {
+        
+          /* 
+           *  Set up an interceptor for add-results methods.
+           *  Call restore() to un-set these before expect() calls after the where clause.
+           */
+           
+          currentSpec = jasmine.getEnv().currentSpec;
 
-      var addResult;
-      var addExpectationResult;
-      var restore;
-      
+          result = /* jasmine 2.x.x. */ currentSpec.result || 
+                   /* jasmine 1.x.x. */ currentSpec.results_;
+                       
+          passMessages = [];
+          failMessages = [];
+
+          /* jasmine 1.x.x. */
+          addResult = result.addResult;
+          result.addResult = function (results) {
+            if (results.trace) {
+              failMessages.push(results.message);
+            } else {
+              passMessages.push(results.message);
+              addResult.call(result, results);
+            }
+          }
+          
+          /* jasmine 2.x.x. */
+          addExpectationResult = currentSpec.addExpectationResult;
+          currentSpec.addExpectationResult = function (passed, data) {
+            if (!passed) {
+              failMessages.push(data.message);
+            } else {
+              passMessages.push(data.message);
+              addExpectationResult.call(passed, data);
+            }          
+          };
+          
+          clear = function() {
+            result.addResult = addResult;
+            currentSpec.addExpectationResult = addExpectationResult;
+          };
+          
+          
+          intercept.clear = clear;
+          intercept.failMessages = failMessages;
+          intercept.passMessages = passMessages;
+
+        }
+
+        return intercept;
+        
+      }());
       
       beforeEach(function() {
 
-        /* 
-         *  Set up an interceptor for add-results methods.
-         *  Call restore() to un-set these before expect() calls after the where clause.
-         */
-         
-        currentSpec = jasmine.getEnv().currentSpec;
-        
-        result = /* jasmine 2.x.x. */ currentSpec.result || 
-                 /* jasmine 1.x.x. */ currentSpec.results_;
-                     
-        passCount = 0;
-        failMessages = [];
+        intercept();
 
-        /* jasmine 1.x.x. */
-        addResult = result.addResult;
-        result.addResult = function (results) {
-          if (results.trace) {
-            failMessages.push(results.message);
-          } else {
-            passCount += 1;
-            addResult.call(result, results);
-          }
-        }
-        
-        /* jasmine 2.x.x. */
-        addExpectationResult = currentSpec.addExpectationResult;
-        currentSpec.addExpectationResult = function (passed, data) {
-          if (!passed) {
-            failMessages.push(data.message);
-          } else {
-            passCount += 1;
-            addExpectationResult.call(passed, data);
-          }          
-        };
-        
-        restore = function() {
-          result.addResult = addResult;
-          currentSpec.addExpectationResult = addExpectationResult;
-        };
-        
       });
       
-
       // TODO EXTRACT TESTS FOR THE RETURN VALUES MATRIX POST-WHERE ASSERTIONS
       
       it('should return messages for incorrect data', function () {
@@ -214,12 +228,12 @@ describe('jasmine-where', function () {
           expect(Math.max(a, b)).toMatch(c);
         });
         
-        restore(); // would be nice if spies could do this w/a callback or onAfter
+        intercept.clear(); // would be nice if spies could do this w/a callback or onAfter
 
-        expect(failMessages.length).toBe(2);
-        expect(passCount).toBe(2);
-        expect(failMessages[0]).toBe("Expected 2 to match '" + values[2][2] + "'.");
-        expect(failMessages[1]).toBe("Expected 5 to match '5.01'.");
+        expect(intercept.failMessages.length).toBe(2);
+        expect(intercept.passMessages.length).toBe(2);
+        expect(intercept.failMessages[0]).toBe("Expected 2 to match '" + values[2][2] + "'.");
+        expect(intercept.failMessages[1]).toBe("Expected 5 to match '5.01'.");
       });
 
       
@@ -235,27 +249,28 @@ describe('jasmine-where', function () {
           expect(Math.max(a, b)).toBe(Number(c));
         });
         
-        restore();
+        intercept.clear();
         
-        expect(failMessages.length).toBe(1);
-        expect(passCount).toBe(3);
-        expect(failMessages[0]).toBe("Expected 8 to be 7.");
+        expect(intercept.failMessages.length).toBe(1);
+        expect(intercept.passMessages.length).toBe(3);
+        expect(intercept.failMessages[0]).toBe("Expected 8 to be 7.");
       });
     
     });
+    
     
     /*
      * Use these tests to see displayed stack traces and results messages for failed specs.
      */
-    describe('non-intercepted failing tests', function () {
+    // describe('non-intercepted failing tests', function () {
 
-      it('should print empty table message in stack trace and spec', function () {
-        var values = where(function(){/*
-          */
-        });
-      });
+      // it("should print '0 rows in table' message in stack trace and spec", function () {
+        // var values = where(function(){/*
+          // */
+        // });
+      // });
       
-    });
+    // });
     
   });
   
