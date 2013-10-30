@@ -1,8 +1,28 @@
 // jasmine-where.js
-
+// david kaye (@dfkaye)
+// 24 Oct 2103
+//
+// Provides a `where()` clause for data-table support to the Jasmine BDD test framework 
+// (https://github.com/pivotal/jasmine), similar to Cucumber's scenario-outline 
+// Examples (https://github.com/cucumber/cucumber/wiki/Scenario-Outlines) or Spock's 
+// where: blocks (https://code.google.com/p/spock/wiki/SpockBasics#Where_Blocks).
+//
+// For example:
+//
+//    it('description', function () {
+//      where(function(){/* 
+//          a  |  b  |  c
+//          1  |  2  |  2
+//          4  |  3  |  4
+//          6  |  6  |  6
+//        */
+//        expect(Math.max(a, b)).toBe(Number(c));
+//      });
+//    });
+//
 (function () {
 
-  /**
+  /*
    * EXPORT JAZZ
    */  
   if (typeof window == "undefined" && typeof global == "object") {
@@ -11,13 +31,13 @@
     window.where = where;
   }
     
-  /**
+  /*
    * CONSTANTS
    */
   var SEP = '|';
   var PAD = ' ' + SEP + ' ';
   
-  /**
+  /*
    * GLOBAL WHERE GRABS IT OFF THE JAZZ ENVIRONMENT
    */
   function where(fn) {
@@ -29,26 +49,13 @@
   // 
   // where() accepts only a function with a commented data-table and an expectation.
   //
-  // returns the data table values array for further use in other expectations.
-  //
-  // detail:
-  //
-  //    it('description', function () {
-  //      where(function(){/* 
-  //          a  |  b  |  c
-  //          1  |  2  |  2
-  //          4  |  3  |  4
-  //          6  |  6  |  6
-  //        */
-  //        expect(Math.max(a, b)).toBe(Number(c));
-  //      });
-  //    });
-  //
   // parses the function into data array, passing each array row into a new Function() 
   // that contains the original function body's expectation statements.
   //
-  // entire data-table with pass/fail messages is printed to the console only if an 
+  // entire data-table with pass/fail messages is passed to the jasmine report only if an 
   // expectation fails.
+  //
+  // returns the data table values array for further use in other expectations.
   //
   ////////////////////////////////////////////////////////////////////////////////////////
   jasmine.getEnv().constructor.prototype.where = function (fn) {
@@ -121,7 +128,7 @@
   
   /**
    * private method
-   * getFnBody takes a function or string and returns the body of the function.
+   * getFnBody() takes a function or string and returns the body of the function.
    */
   function getFnBody(fn) {
   
@@ -133,7 +140,7 @@
   
   /**
    * private method
-   * parseFn takes a function or string and extracts the data table labels and values.
+   * parseFn() takes a function or string and extracts the data table labels and values.
    * returns a result object with {body} the function as a string and {table} data array.
    */
   function parseFnBody(fnBody) {

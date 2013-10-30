@@ -1,7 +1,7 @@
 jasmine-where
 =============
 
-Provide a `where()` clause for data-table support to the 
+Provides a `where()` clause for data-table support to the 
 [Jasmine BDD test framework](https://github.com/pivotal/jasmine), similar to 
 Cucumber's scenario-outline 
 [Examples](https://github.com/cucumber/cucumber/wiki/Scenario-Outlines) 
@@ -69,6 +69,10 @@ Current implementation runs in both jasmine 1.3.1 and jasmine 2.0.0-rc3.
 Using jasmine-node which uses jasmine 1.3.1 internally.
 
     jasmine-node --verbose ./test/suite.spec.js
+
+or simply
+
+    npm test
     
 Using [testemjs](https://github.com/airportyh/testem) to drive tests in multiple 
 browsers for jasmine-2.0.0 (see how to 
@@ -96,7 +100,7 @@ return values
 -------------
 
 You can capture the generated data table, including the labels, as the return 
-value of the where clause for post-where assertions:
+value of the `where` clause for post-where assertions:
 
     it('returns data', function () {
       
@@ -118,14 +122,26 @@ value of the where clause for post-where assertions:
         expect(values[2][2]).toBe('two');
         
     });
-     
+
+    
+jasmine-intercept
+-----------------
+
+In working this out, I found I needed a way to intercept the results in `where` 
+tests that were expected to fail.  I've worked out 
+[jasmine-intercept](https://github.com/dfkaye/jasmine-intercept) to handle that.
+
+A copy of jasmine-intercept is included in this repo.
+
+
 TODO
 ----
-+ tests for returnValues in post-`where()` assertions
-+ tests for comments
++ <del>push jasmine-intercept</del>
++ <del>tests for returnValues in post-`where()` assertions</del>
++ <del>tests for comments</del>
 + at least one asynchronous test
-+ figure out which clauses do _not_ support this ('it' works best)
-+ possible alternative APIs/tests (describe -> where -> it, e.g.)
++ <del>figure out which clauses do _not_ support this ('it' works best)</del>
++ <del>possible alternative APIs/tests (describe -> where -> it, e.g.)</del>
 + <del>better reporter message hooks (html reporter overrides)</del>
 + <del>more code cleanup</del> (ongoing)
 + <del>better doc</del> (ongoing)
