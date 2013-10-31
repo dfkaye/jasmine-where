@@ -1,15 +1,18 @@
 {
   "name": "jasmine-where",
-  "version": "0.0.0",
-  "description": "adds a where() clause to jasmine, similar to cucumber scenario outline or spock example clauses",
+  "version": "0.0.2",
+  "description": "provides where() clause to jasmine, similar to Cucumber scenario-outline examples or Spock where blocks",
   "homepage" : "https://github.com/dfkaye/jasmine-where",
   "author": {
     "name": "david kaye (@dfkaye)",
     "email" : "dfkaye@yahoo.com"
   },
   "devDependencies": {
-    "jasmine-node": "~1.0.0"
+    "jasmine-node": "~1.0.0",
+    "jasmine-intercept": "~0.0.2"
   },
+  "license": "MIT",
+  "main": "./jasmine-where.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/dfkaye/jasmine-where.git"

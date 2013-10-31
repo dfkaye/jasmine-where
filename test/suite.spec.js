@@ -2,7 +2,7 @@
 
 if (typeof require == 'function') {
   require('../jasmine-where');
-  require('./jasmine-intercept.js');
+  require('jasmine-intercept');
 }
 
 describe('jasmine-where', function () {
@@ -136,61 +136,50 @@ describe('jasmine-where', function () {
      * that fail.
      */
 
-    describe('intercepting expected failing specs', function () {
-
-      beforeEach(function() {
-    
-        /* 
-         *  Set up an interceptor for add-results methods.
-         *  Call intercept.clear() to un-set these before expect() calls after the where clause.
-         */
-        intercept();
-
-      });
-      
-      // TODO EXTRACT TESTS FOR THE RETURN VALUES MATRIX POST-WHERE ASSERTIONS
-      
-      it('should return messages for incorrect data', function () {
-      
-        var values = where(function(){/* 
-            a  |  b  |  c
-            1  |  1  |  1
-            1  |  2  |  x
-            3  |  2  |  3
-            5  |  3  |  5.01
-          */
-          // within-where
-          expect(Math.max(a, b)).toMatch(c);
-        });
-        
-        intercept.clear(); // would be nice if spies could do this w/a callback or onAfter
-
-        expect(intercept.failMessages.length).toBe(2);
-        expect(intercept.passMessages.length).toBe(2);
-        expect(intercept.failMessages[0]).toBe("Expected 2 to match '" + values[2][2] + "'.");
-        expect(intercept.failMessages[1]).toBe("Expected 5 to match '5.01'.");
-      });
-
-      
+    describe('jasmine-intercept for expected failing specs', function () {
+           
       it('should return messages for incorrect expectation', function () {
       
-        where(function(){/* 
-            a  |  b  |  c
-            1  |  1  |  1
-            1  |  2  |  2
-            4  |  2  |  4
-            4  |  8  |  7
-          */
-          expect(Math.max(a, b)).toBe(Number(c));
+         var messages = intercept(function() {
+           where(function(){/* 
+              a  |  b  |  c
+              1  |  1  |  1
+              1  |  2  |  2
+              4  |  2  |  4
+              4  |  8  |  7
+            */
+            expect(Math.max(a, b)).toBe(Number(c));
+          });
+        
         });
         
-        intercept.clear();
-        
-        expect(intercept.failMessages.length).toBe(1);
-        expect(intercept.passMessages.length).toBe(3);
-        expect(intercept.failMessages[0]).toBe("Expected 8 to be 7.");
+        expect(messages.failing.length).toBe(1);
+        expect(messages.passing.length).toBe(3);
+        expect(messages.failing[0]).toBe("Expected 8 to be 7.");
       });
-    
+
+      
+      it('should return messages for incorrect values', function () {
+      
+        var values;
+        
+        var messages = intercept(function() {
+          values = where(function(){/* 
+              a  |  b  |  c
+              1  |  1  |  1
+              1  |  2  |  x
+              3  |  2  |  3
+              5  |  3  |  5.01
+            */
+            expect(Math.max(a, b)).toMatch(c);
+          });
+        });
+
+        expect(messages.failing.length).toBe(2);
+        expect(messages.passing.length).toBe(2);
+        expect(messages.failing[0]).toBe("Expected 2 to match '" + values[2][2] + "'.");
+        expect(messages.failing[1]).toBe("Expected 5 to match '5.01'.");
+      });
     });
     
     
@@ -213,34 +202,31 @@ describe('jasmine-where', function () {
         
       });
       
-      
       it('should work with intercept', function (done) {
 
         setTimeout(function () {
         
-          intercept();
+          var messages = intercept(function(){
           
-          where(function(){/* 
-              a  |  b  |  c
-              1  |  1  |  1
-              1  |  2  |  2
-              4  |  2  |  4
-              4  |  8  |  7
-            */
-            expect(Math.max(a, b)).toBe(Number(c));
+            where(function(){/* 
+                a  |  b  |  c
+                1  |  1  |  1
+                1  |  2  |  2
+                4  |  2  |  4
+                4  |  8  |  7
+              */
+              expect(Math.max(a, b)).toBe(Number(c));
+            });
           });
           
-          intercept.clear();
-          
-          expect(intercept.failMessages.length).toBe(1);
-          expect(intercept.passMessages.length).toBe(3);
-          expect(intercept.failMessages[0]).toBe("Expected 8 to be 7.");
+          expect(messages.failing.length).toBe(1);
+          expect(messages.passing.length).toBe(3);
+          expect(messages.failing[0]).toBe("Expected 8 to be 7.");
           
           done();
           
         }, 500);
       });
-
       
     });
     
