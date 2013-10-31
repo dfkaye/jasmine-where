@@ -95,6 +95,13 @@ In addition, the following command uses a custom launcher for `jasmine-node` in
     testem -l jasmine-node
 
     
+important
+---------
+
+Including or requiring `jasmine-where` adds a `where()` method to the **global** 
+namespace.
+
+
 output
 ------
 
