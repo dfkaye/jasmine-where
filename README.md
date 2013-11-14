@@ -102,7 +102,7 @@ rawgithub test page
 -------------------
 
 __The *jasmine2* browser test page is viewable on 
-<a href='//rawgithub.com/dfkaye/vm-shim/master/test/browser-test.html' 
+<a href='//rawgithub.com/dfkaye/jasmine-where/master/test/browser-test.html' 
    target='_new' title='opens in new tab or window'>rawgithub</a>.__
 
    
