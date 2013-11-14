@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jasmine-where tests with jasmine2</title>
+  
+  <script>if (location.href.indexOf('://localhost:7357') != - 1) {
+  
+    document.write('<link rel="stylesheet" href="/testem/jasmine2/jasmine.css"/>');
+
+    document.write('<script src="/testem/jasmine2/jasmine.js">' + '<\/' + 'script>');
+    document.write('<script src="/testem/jasmine2/jasmine-html.js">' + '<\/' + 'script>');
+    document.write('<script src="/testem/jasmine2/boot.js">' + '<\/' + 'script>');
+    
+    <!-- testem must wait for the jasmine 2 boot file -->
+    document.write('<script src="/testem.js">' + '<\/' + 'script>');
+    
+  } else {
+  
+    document.write('<link rel="stylesheet" href="lib/jasmine2/jasmine.css"/>');
+  
+    document.write('<script src="lib/jasmine2/jasmine.js">' + '<\/' + 'script>');
+    document.write('<script src="lib/jasmine2/jasmine-html.js">' + '<\/' + 'script>');
+    document.write('<script src="lib/jasmine2/boot.js">' + '<\/' + 'script>');
+    
+  }</script>
+  
+  <script src="../jasmine-where.js"></script>
+  <script src="../node_modules/jasmine-intercept/jasmine-intercept.js"></script>
+  <script src="./suite.spec.js"></script>
+
+</head>
+<body></body>
+</html>

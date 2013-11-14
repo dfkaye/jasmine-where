@@ -146,7 +146,7 @@
   function parseFnBody(fnBody) {
   
     var fs = fnBody.toString();
-    var table = fs.match(/\/\*[^\*]+\*\//);
+    var table = fs.match(/\/(\*){3,3}[^\*]+(\*){3,3}\//);
     var data = table[0].replace(/[\/\*]*[\r]*[\*\/]*/g, '').split('\n');
     var rows = [];
     

@@ -1,6 +1,6 @@
 {
   "framework": "jasmine2",
-  "test_page": "test-page.html",
+  "test_page": "test/browser-test.html",
   "launchers": {
     "jasmine-node": {
       "command": "jasmine-node --verbose ./test/suite.spec.js"

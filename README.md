@@ -15,6 +15,23 @@ Partly inspired by:
 + Richard Rodger's [mstring](https://github.com/rjrodger/mstring)
 
 
+install
+-------
+
+    npm install jasmine-where
+    
+    git clone https://github.com/dfkaye/jasmine-where.git
+  
+__!important__: including or requiring `jasmine-where` adds a `where()` method to 
+the **global** namespace:
+
+    require('jasmine-where');
+    console.log(global.where && where) // => global.where
+    
+    <script -- jasmine 1 or 2 scripts first -->
+    <script src="../jasmine-where.js"></script>
+    
+    
 justify
 -------
 
@@ -22,13 +39,13 @@ Easier to modify this
     
     it('description', function () {
     
-      where(function(){/* 
-        a  |  b  |  c
-        1  |  2  |  2
-        4  |  3  |  4
-        6  |  6  |  6
-       */
-       expect(Math.max(a, b)).toBe(Number(c));
+      where(function(){/*** 
+          a  |  b  |  c
+          1  |  2  |  2
+          4  |  3  |  4
+          6  |  6  |  6
+        ***/
+        expect(Math.max(a, b)).toBe(Number(c));
       });
       
     });
@@ -49,16 +66,17 @@ than this:
     });
 
     
-details
--------
+story
+-----
 
 Borrowing from Richard Rodger's [mstring](https://github.com/rjrodger/mstring), 
-`where()` accepts a function and inspects its string value, converts 
-the commented data-table into an array of values, uses the labels as variables 
-or symbols in a new Function().
+`where()` accepts a function and inspects its string value, converts the triple-
+commented data-table into an array of values, uses the labels as variables or 
+symbols in a new Function().
 
-Each `where()` clause works best with only one expectation clause at the moment (still debating 
-whether it's worth supporting multiple expects in a single `where()`). 
+Each `where()` clause works best with only one expectation clause at the moment 
+(still debating whether it's worth supporting multiple expects in a single 
+`where()`). 
 
 
 jasmine versions supported
@@ -79,27 +97,28 @@ or simply
 
     npm test
 
+    
+rawgithub test page
+-------------------
 
+__The *jasmine2* browser test page is viewable on 
+<a href='//rawgithub.com/dfkaye/vm-shim/master/test/browser-test.html' 
+   target='_new' title='opens in new tab or window'>rawgithub</a>.__
+
+   
 testem
 ------
 
-Using [testemjs](https://github.com/airportyh/testem) to drive tests in multiple 
-browsers for jasmine-2.0.0 (see how to 
-[configure testem for jasmine 2](https://github.com/dfkaye/testem-jasmine2)), as 
-well as jasmine-node.  This repo contains a custom test-page.html for testem to 
-run browser tests with the `testem` command. 
+Using Toby Ho's MAGNIFICENT [testemjs](https://github.com/airportyh/testem) to 
+drive tests in multiple browsers for jasmine-2.0.0 (see how to 
+[hack testem for jasmine 2](https://github.com/dfkaye/testem-jasmine2)), as well 
+as jasmine-node.  The `testem.json` file uses the standalone test page above, 
+and also uses a custom launcher for jasmine-node (v 1.3.1).
 
 In addition, the following command uses a custom launcher for `jasmine-node` in 
 `testem`:
 
     testem -l jasmine-node
-
-    
-important
----------
-
-Including or requiring `jasmine-where` adds a `where()` method to the **global** 
-namespace.
 
 
 output
@@ -123,23 +142,21 @@ value of the `where` clause for post-where assertions:
 
     it('returns data', function () {
       
-        var values = where(function(){/* 
+        var values = where(function(){/*** 
             a  |  b  |  c
             1  |  1  |  1
             1  |  2  |  two
             3  |  2  |  3
             5  |  3  |  5.01
-          */
+          ***/
           
           // within-where
           expect(Math.max(a, b)).toMatch(c);
-          
         });
         
         
         // post-where
         expect(values[2][2]).toBe('two');
-        
     });
 
     
@@ -148,10 +165,6 @@ jasmine-intercept test dependency
 
 In working this out, I found I needed a way to intercept the results in `where` 
 tests that were expected to fail.  I've worked out 
-[jasmine-intercept](https://github.com/dfkaye/jasmine-intercept) to handle that.
-
-
-npm
----
-
-  npm install jasmine-where
+[jasmine-intercept](https://github.com/dfkaye/jasmine-intercept) to handle that. 
+It is included in the node_modules directory of this repo (if you're viewing on 
+github).
