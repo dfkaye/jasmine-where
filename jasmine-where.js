@@ -10,12 +10,12 @@
 // For example:
 //
 //    it('description', function () {
-//      where(function(){/* 
+//      where(function(){/***
 //          a  |  b  |  c
 //          1  |  2  |  2
 //          4  |  3  |  4
 //          6  |  6  |  6
-//        */
+//        ***/
 //        expect(Math.max(a, b)).toBe(Number(c));
 //      });
 //    });
