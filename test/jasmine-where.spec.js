@@ -1,9 +1,4 @@
-// suite.spec.js
-
-if (typeof require == 'function') {
-  require('../jasmine-where');
-  require('jasmine-intercept');
-}
+// jasmine-where.spec.js
 
 describe('jasmine-where', function () {
     

@@ -90,7 +90,7 @@ jasmine-node
 Using [jasmine-node](https://github.com/mhevery/jasmine-node) which uses 
 `jasmine-1.3.1` internally.  Run that with
 
-    jasmine-node --verbose ./test/suite.spec.js
+    jasmine-node --verbose ./test/node-suite.js
 
 or simply
 
@@ -101,7 +101,7 @@ rawgithub test page
 -------------------
 
 __The *jasmine2* browser test page is viewable on 
-<a href='//rawgithub.com/dfkaye/jasmine-where/master/test/browser-test.html' 
+<a href='//rawgithub.com/dfkaye/jasmine-where/master/test/browser-suite.html' 
    target='_new' title='opens in new tab or window'>rawgithub</a>.__
 
    
@@ -117,7 +117,7 @@ and also uses a custom launcher for jasmine-node (v 1.3.1).
 In addition, the following command uses a custom launcher for `jasmine-node` in 
 `testem`:
 
-    testem -l jasmine-node
+    testem -l j
 
 
 output

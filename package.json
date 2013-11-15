@@ -18,6 +18,6 @@
     "url": "git://github.com/dfkaye/jasmine-where.git"
   },
   "scripts": {
-    "test": "jasmine-node --verbose ./test/suite.spec.js"
+    "test": "jasmine-node --verbose ./test/node-suite.spec.js"
   }
 }
