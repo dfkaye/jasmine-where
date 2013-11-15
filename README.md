@@ -45,10 +45,11 @@ Easier to modify this
           4  |  3  |  4
           6  |  6  |  6
         ***/
-        expect(Math.max(a, b)).toBe(Number(c));
-      });
+        
+        expect(a + b)).toBe(c)
+      })
       
-    });
+    })
 
 than this:
 
@@ -57,13 +58,11 @@ than this:
       [[1, 2, 2],
        [4, 3, 4],
        [6, 6, 6]].forEach(function(row, r, rows) {
-       
-        var a = row[0], b = row[1], c = row[2];
-        
-        expect(Math.max(a, b)).toBe(Number(c));
-      });
+               
+        expect(Number(row[0]) + Number(row[1])).toBe(Number(row[2]))
+      })
       
-    });
+    })
 
     
 story
@@ -76,7 +75,7 @@ symbols in a new Function().
 
 Each `where()` clause works best with only one expectation clause at the moment 
 (still debating whether it's worth supporting multiple expects in a single 
-`where()`). 
+`where()`).
 
 
 jasmine versions supported
@@ -131,7 +130,7 @@ current expectation are added to the *current* failing item. Every failed
 expectation in a `where()` clause will appear as:
 
      [a | b | c] : 
-     [1 | 2 | x] (Expected 2 to be NaN.)
+     [1 | 2 | x] (Expected 2 to be 'x'.)
 
 
 return values
@@ -150,13 +149,46 @@ value of the `where` clause for post-where assertions:
             5  |  3  |  5.01
           ***/
           
-          // within-where
-          expect(Math.max(a, b)).toMatch(c);
+          // within where
+          expect(Math.max(a, b)).toBe(c);
         });
         
         
-        // post-where
+        // inspect values returned by where()
         expect(values[2][2]).toBe('two');
+    });
+
+    
+numeric data automatically converted
+------------------------------------
+
+Supports `Math.max(a, b)` to avoid typing `Math.max(Number(a), Number(b))`.
+
+Everything can use `toBe()` (strict equality) - no need to rely on `toMatch()`.
+
+However, where `Math` is involved there is usually an octal, signed, comma, or 
+precision bug waiting.  All but precision are handled automatically; however, 
+you can get precision into your tests by adding another column, as seen in the 
+test created to verify numeric conversions work:
+
+    where(function(){/***
+    
+            a     |    b     |    c     |  p
+            
+            0     |    1     |    1     |  1
+            0.0   |    1.0   |    1     |  1
+           -1     |   +1     |    0     |  1
+           +1.1   |   -1.2   |   -0.1   |  2
+           08     |   08     |   16     |  2
+            6     |    4     |   10.0   |  3
+            8.030 |   -2.045 |    5.985 |  4
+        1,000.67  | 1345     | 2345.67  |  6
+        
+      ***/
+      
+      // using precisions for famous 5.985 vs 5.98499999999999999999999999 bugz
+      var s = (a + b).toPrecision(p) // toPrecision() returns a string
+      expect(+s).toBe(c) // but prefixed '+' uses implicit conversion to number.
     });
 
     

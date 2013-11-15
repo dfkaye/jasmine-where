@@ -189,10 +189,16 @@
 
         // data row length
         if (size !== row.length) {
-          throw new Error('where() data table has unbalanced rows; expected ' + size + 
-                          ' but was ' + row.length);
+          throw new Error('where() data table has unbalanced row; expected ' + size + 
+                          ' columns but has ' + row.length + ': [' + row.join(', ') + ']');
         }
-      
+
+        // convert numerics
+        for (var t, n = 0; n < row.length; n++) {
+          t = parseFloat(row[n].replace(/\,/g,''))
+          isNaN(t) || (row[n] = t)
+        }
+        
         rows.push(row);        
       }
     }

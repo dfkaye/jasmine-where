@@ -48,8 +48,55 @@ describe('jasmine-where', function () {
         expect(Math.max(a, b)).toBe(Number(c));
       });
     });
+    
+    it('should ignore empty rows', function () {
+      where(function(){/*** 
+          a  |  b  |  c
 
-
+          6  |  6  |  6
+        ***/
+        expect(Math.max(a, b)).toBe(Number(c));
+      });
+    });
+    
+    it('should pass with data containing various padding', function () {
+      expect(function () {
+        where(function(){/*** 
+          a | b|c
+           6|4 |10
+        ***/
+        
+        // I DETECT A USABILITY ISSUE WITH Number() for every input     
+        expect(Number(a) + Number(b)).toBe(Number(c))
+        
+        });
+       }).not.toThrow();
+    });
+    
+    it('should convert numeric data automatically', function () {
+      expect(function () {
+        where(function(){/***
+        
+                a     |    b     |    c     |  p
+                
+                0     |    1     |    1     |  1
+                0.0   |    1.0   |    1     |  1
+               -1     |   +1     |    0     |  1
+               +1.1   |   -1.2   |   -0.1   |  2
+               08     |   08     |   16     |  2
+                6     |    4     |   10.0   |  3
+                8.030 |   -2.045 |    5.985 |  4
+            1,000.67  | 1345     | 2345.67  |  6
+            
+          ***/
+          
+          // using precisions for famous 5.985 vs 5.98499999999999999999999999 bugz
+          var s = (a + b).toPrecision(p)
+          expect(+s).toBe(c) // implicit conversion with prefixed +
+        });
+       }).not.toThrow();
+    });
+    
     describe('a malformed data table', function () {
 
       it('should throw when function has no data-table comment', function () {
@@ -127,7 +174,6 @@ describe('jasmine-where', function () {
           ***/});
          }).toThrow();
       });
-
     });
     
     
@@ -141,6 +187,7 @@ describe('jasmine-where', function () {
       it('should return messages for incorrect expectation', function () {
       
          var messages = intercept(function() {
+         
            where(function(){/*** 
               a  |  b  |  c
               1  |  1  |  1
@@ -148,7 +195,7 @@ describe('jasmine-where', function () {
               4  |  2  |  4
               4  |  8  |  7
             ***/
-            expect(Math.max(a, b)).toBe(Number(c));
+            expect(Math.max(a, b)).toBe(c);
           });
         
         });
@@ -159,7 +206,7 @@ describe('jasmine-where', function () {
       });
 
       
-      it('should return messages for incorrect values', function () {
+      it('should return messages for incorrect matches or values', function () {
       
         var values;
         
@@ -171,14 +218,16 @@ describe('jasmine-where', function () {
               3  |  2  |  3
               5  |  3  |  5.01
             ***/
-            expect(Math.max(a, b)).toMatch(c);
+            
+            // using match for numeric data here
+            expect(Math.max(a, b)).toBe(c);  
           });
         });
 
         expect(messages.failing.length).toBe(2);
         expect(messages.passing.length).toBe(2);
-        expect(messages.failing[0]).toBe("Expected 2 to match '" + values[2][2] + "'.");
-        expect(messages.failing[1]).toBe("Expected 5 to match '5.01'.");
+        expect(messages.failing[0]).toBe("Expected 2 to be '" + values[2][2] + "'.");
+        expect(messages.failing[1]).toBe("Expected 5 to be 5.01.");
       });
     });
     
