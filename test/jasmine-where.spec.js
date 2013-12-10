@@ -44,6 +44,17 @@ describe('jasmine-where', function () {
       });
     });
     
+    it('should pass with left and right table borders', function () {
+      where(function(){/*** 
+        | d | e | f |
+        | 1 | 2 | 2 |
+        | 4 | 3 | 4 |
+        | 6 | 6 | 6 |
+        ***/
+        expect(Math.max(d, e)).toBe(f);
+      });
+    });
+    
     it('should ignore empty rows', function () {
       where(function(){/*** 
           a  |  b  |  c
@@ -147,7 +158,7 @@ describe('jasmine-where', function () {
         expect(function () {
           where(function(){/*** 
             a  |  b  |  c
-               |  1  | 2
+               |  1  |  2
           ***/});
         }).toThrow();
       });

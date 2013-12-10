@@ -9,16 +9,31 @@
 //
 // For example:
 //
-//    it('description', function () {
+//    it('should pass with correct data and expectation', function () {
 //      where(function(){/***
-//          a  |  b  |  c
-//          1  |  2  |  2
-//          4  |  3  |  4
-//          6  |  6  |  6
+//         a | b | c
+//         1 | 2 | 2
+//         4 | 3 | 4
+//         6 | 6 | 6
 //        ***/
-//        expect(Math.max(a, b)).toBe(Number(c));
-//      });
-//    });
+//        expect(Math.max(a, b)).toBe(c);
+//      })
+//    })
+//
+//  Table may also contain left and right borders:
+//
+//    it('should pass with left and right table borders', function () {
+//      where(function(){/***
+//        | a | b | c |
+//        | 1 | 2 | 2 |
+//        | 4 | 3 | 4 |
+//        | 6 | 6 | 6 |
+//        ***/
+//        expect(Math.max(a, b)).toBe(c);
+//      })
+//    })
+//
+//  NOTE: numeric data is automatically coerced to Number type.
 //
 (function () {
 
@@ -41,7 +56,7 @@
    * GLOBAL WHERE GRABS IT OFF THE JAZZ ENVIRONMENT
    */
   function where(fn) {
-    return jasmine.getEnv().where(fn);
+    return jasmine.getEnv().where(fn)
   };
   
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -61,10 +76,11 @@
   jasmine.getEnv().constructor.prototype.where = function (fn) {
 
     if (typeof fn != 'function') {
-      throw new Error('where(param) expected param should be a function');
+      throw new Error('where(param) expected param should be a function')
     }
     
-    var fnBody = getFnBody(fn);
+    var fnBody = fn.toString().replace(/\s*function[^\(]*[\(][^\)]*[\)][^\{]*{/,'')
+                              .replace(/[\}]$/, '');
     var values = parseFnBody(fnBody);
     var labels = values[0];
     
@@ -119,25 +135,12 @@
           item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
         }
       }
-      
     }    
     
     // use these in further assertions 
     return values;
   };
-  
-  /**
-   * private method
-   * getFnBody() takes a function or string and returns the body of the function.
-   */
-  function getFnBody(fn) {
-  
-    var fnBody = fn.toString().replace(/\s*function[^\(]*[\(][^\)]*[\)][^\{]*{/,'')
-                              .replace(/[\}]$/, '');
-                 
-    return fnBody;
-  }
-  
+    
   /**
    * private method
    * parseFn() takes a function or string and extracts the data table labels and values.
@@ -159,29 +162,44 @@
       if (row.match(/\S+/)) {
 
         row = row.replace(/\s+/g, '');
-        
-        // empty right column
-        if (row.charAt(0) == SEP || row.charAt(row.length - 1) == SEP || row.match(/\|\|/)) {
-            throw new Error('where() data table has unbalanced rows: ' + row);
+
+        // empty column
+        if (row.match(/[\|][\|]/g)) {
+          throw new Error('where() data table has unbalanced columns: ' + row);
         }
         
         row = row.split(SEP);
 
-        // first data row (labels)
+        // left border
+        if (row[0] === '') {
+          row.shift()
+        }
+        
+        // right border
+        if (row[row.length - 1] === '') {
+          row.pop()
+        }
+
+        // first row (labels)
         if (typeof size != 'number') {
         
           size = row.length;
           
           // no duplicates
           (function (row) {
+          
             var visited = {};
             var label;
+            
             for (var j = 0; j < row.length; ++j) {
+            
               label = row[j];
+              
               if (visited[label]) {
                 throw new Error('where() data table contains duplicate label \'' + label +
                                 '\' in [' + row.join(', ') + ']');
               }
+              
               visited[label] = 1;
             }
           }(row));
@@ -211,5 +229,4 @@
     
     return rows;
   }
-  
 }());
