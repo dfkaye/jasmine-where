@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "jasmine-node": "1.x.x",
-    "jasmine-intercept": ">= 0.0.8"
+    "jasmine-intercept": ">= 0.0.9"
   },
   "license": "MIT",
   "main": "./jasmine-where.js",

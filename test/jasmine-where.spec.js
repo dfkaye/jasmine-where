@@ -8,9 +8,9 @@ describe('jasmine-where', function () {
       expect(typeof jasmine.getEnv().where).toBe('function');
     });
     
-    // it('should be global', function() {
-      // expect(typeof where).toBe('function');
-    // });
+    it('should be global', function() {
+      expect(typeof where).toBe('function');
+    });
       
     it('should accept one argument', function () {
       expect(where.length).toBe(1);
