@@ -10,10 +10,12 @@
 
   /*
    * EXPORT JAZZ
-   */  
-  if (typeof window == "undefined" && typeof global == "object") {
+   */
+  if (typeof global != "undefined") {
     global.intercept = intercept;
-  } else if (typeof window != "undefined") {
+  }
+  
+  if (typeof window != "undefined") {
     window.intercept = intercept;
   }
 
@@ -33,7 +35,7 @@
    *
    * returns a results object containing to the passing and failing message arrays.
    */   
-  jasmine.getEnv().constructor.prototype.intercept = function(fn) {
+  jasmine.getEnv().constructor.prototype.intercept = function intercept(fn) {
 
     if (typeof fn != 'function') {
       throw new Error('intercept() param expected to be a function but was ' + typeof fn);
@@ -42,24 +44,15 @@
     /*
      * set up vars for each iteration first
      */
-    var currentSpec;
-    var result;
-    var passing;
-    var failing;
-    var addResult; /* jasmine 1.x.x. */
-    var addExpectationResult; /* jasmine 2.x.x. */
-    var clear;
+    var currentSpec = jasmine.getEnv().currentSpec;
+    var passing = [];
+    var failing = [];
+    var result = /* jasmine 2.x.x. */ currentSpec.result || 
+                 /* jasmine 1.x.x. */ currentSpec.results_;
     
-    currentSpec = jasmine.getEnv().currentSpec;
-
-    result = /* jasmine 2.x.x. */ currentSpec.result || 
-             /* jasmine 1.x.x. */ currentSpec.results_;
-                 
-    passing = [];
-    failing = [];
-
+    // overwrite result api (temporarily)..
     /* jasmine 1.x.x. */
-    addResult = result.addResult;
+    var addResult = result.addResult;
     result.addResult = function (results) {
       if (results.trace) {
         failing.push(results.message);
@@ -70,7 +63,7 @@
     }
     
     /* jasmine 2.x.x. */
-    addExpectationResult = currentSpec.addExpectationResult;
+    var addExpectationResult = currentSpec.addExpectationResult;
     currentSpec.addExpectationResult = function (passed, data) {
       if (!passed) {
         failing.push(data.message);
@@ -80,14 +73,11 @@
       }          
     };
     
-    clear = function() {
-      result.addResult = addResult;
-      currentSpec.addExpectationResult = addExpectationResult;
-    };
-    
     fn();
     
-    clear();
+    // restore result api
+    result.addResult = addResult;
+    currentSpec.addExpectationResult = addExpectationResult;
     
     return {
       failing: failing,

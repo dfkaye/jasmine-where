@@ -23,14 +23,20 @@ install
     
     git clone https://github.com/dfkaye/jasmine-where.git
   
-__!important__: including or requiring `jasmine-where` adds a `where()` method to 
-the **global** namespace:
+important
+---------
+
+Including or requiring `jasmine-where` adds a `where()` method to the **global** 
+namespace, for example:
 
     require('jasmine-where');
-    console.log(global.where && where) // => global.where
-    
+
+    where === global.where === jasmine.getEnv().where;
+
     <script -- jasmine 1 or 2 scripts first -->
     <script src="../jasmine-where.js"></script>
+
+    where === window.where === jasmine.getEnv().where;
     
 justify
 -------
@@ -46,10 +52,10 @@ Easier to modify this
           6  |  6  |  6
         ***/
         
-        expect(a + b)).toBe(c)
-      })
+        expect(a + b)).toBe(c);
+      });
       
-    })
+    });
 
 than this:
 
@@ -59,10 +65,10 @@ than this:
        [4, 3, 4],
        [6, 6, 6]].forEach(function(row, r, rows) {
                
-        expect(Number(row[0]) + Number(row[1])).toBe(Number(row[2]))
-      })
+        expect(Number(row[0]) + Number(row[1])).toBe(Number(row[2]));
+      });
       
-    })
+    });
     
 story
 -----
@@ -93,8 +99,8 @@ For example:
          6 | 6 | 6
         ***/
         expect(Math.max(a, b)).toBe(c);
-      })
-    })
+      });
+    });
 
 Tables may also contain left and right borders, similar to Cucumber and Fit:
 
@@ -106,13 +112,14 @@ Tables may also contain left and right borders, similar to Cucumber and Fit:
         | 6 | 6 | 6 |
         ***/
         expect(Math.max(a, b)).toBe(c);
-      })
-    })
+      });
+    });
 
-NOTE: numeric data automatically coerced to Number type
--------------------------------------------------
+    
+Numeric data is automatically coerced to Number type
+----------------------------------------------------
 
-Supports `Math.max(a, b)` to avoid typing `Math.max(Number(a), Number(b))`.
+Supports `Math.max(a, b)` to avoid re-typing `Math.max(Number(a), Number(b))`.
 
 Everything can use `toBe()` (strict equality) - no need to rely on `toMatch()`.
 
@@ -226,5 +233,3 @@ In addition, the following command uses a custom launcher for `jasmine-node` in
 `testem`:
 
     testem -l j
-
-

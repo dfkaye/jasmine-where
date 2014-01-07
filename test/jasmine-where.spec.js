@@ -8,9 +8,9 @@ describe('jasmine-where', function () {
       expect(typeof jasmine.getEnv().where).toBe('function');
     });
     
-    it('should be global', function() {
-      expect(typeof where).toBe('function');
-    });
+    // it('should be global', function() {
+      // expect(typeof where).toBe('function');
+    // });
       
     it('should accept one argument', function () {
       expect(where.length).toBe(1);
@@ -181,63 +181,62 @@ describe('jasmine-where', function () {
          }).toThrow();
       });
     });
+   
+  });   
     
+  /***
+   * Use these tests to intercept result messages set by jasmine, particularly on specs
+   * that fail.
+   ***/
+
+  describe('jasmine-intercept for expected failing specs', function () {
+
+    it('should return messages for incorrect expectation', function () {
     
-    /***
-     * Use these tests to intercept result messages set by jasmine, particularly on specs
-     * that fail.
-     ***/
-
-    describe('jasmine-intercept for expected failing specs', function () {
-           
-      it('should return messages for incorrect expectation', function () {
-      
-         var messages = intercept(function() {
-         
-           where(function(){/*** 
-              a  |  b  |  c
-              1  |  1  |  1
-              1  |  2  |  2
-              4  |  2  |  4
-              4  |  8  |  7
-            ***/
-            expect(Math.max(a, b)).toBe(c);
-          });
-        
+       var messages = intercept(function() {
+       
+         where(function(){/*** 
+            a  |  b  |  c
+            1  |  1  |  1
+            1  |  2  |  2
+            4  |  2  |  4
+            4  |  8  |  7
+          ***/
+          expect(Math.max(a, b)).toBe(c);
         });
-        
-        expect(messages.failing.length).toBe(1);
-        expect(messages.passing.length).toBe(3);
-        expect(messages.failing[0]).toBe("Expected 8 to be 7.");
-      });
-
       
-      it('should return messages for incorrect matches or values', function () {
-      
-        var values;
-        
-        var messages = intercept(function() {
-          values = where(function(){/*** 
-              a  |  b  |  c
-              1  |  1  |  1
-              1  |  2  |  x
-              3  |  2  |  3
-              5  |  3  |  5.01
-            ***/
-            
-            // using match for numeric data here
-            expect(Math.max(a, b)).toBe(c);  
-          });
-        });
-
-        expect(messages.failing.length).toBe(2);
-        expect(messages.passing.length).toBe(2);
-        expect(messages.failing[0]).toBe("Expected 2 to be '" + values[2][2] + "'.");
-        expect(messages.failing[1]).toBe("Expected 5 to be 5.01.");
       });
+      
+      expect(messages.failing.length).toBe(1);
+      expect(messages.passing.length).toBe(3);
+      expect(messages.failing[0]).toBe("Expected 8 to be 7.");
     });
+
+    it('should return messages for incorrect matches or values', function () {
     
-    
+      var values;
+      
+      var messages = intercept(function() {
+      
+        values = where(function(){/*** 
+            a  |  b  |  c
+            1  |  1  |  1
+            1  |  2  |  x
+            3  |  2  |  3
+            5  |  3  |  5.01
+          ***/
+          
+          // using match for numeric data here
+          expect(Math.max(a, b)).toBe(c);  
+        });
+      });
+
+      expect(messages.failing.length).toBe(2);
+      expect(messages.passing.length).toBe(2);
+      expect(messages.failing[0]).toBe("Expected 2 to be '" + values[2][2] + "'.");
+      expect(messages.failing[1]).toBe("Expected 5 to be 5.01.");
+    }); 
+  
     describe('asynchronous tests', function () {
     
       it('should throw when missing separator in data-table', function (done) {
@@ -284,20 +283,20 @@ describe('jasmine-where', function () {
       });
       
     });
-    
-    /***
-     * Use these tests to see displayed stack traces and results messages for failed specs.
-     ***/
-    // describe('non-intercepted failing tests', function () {
+  
+  /***
+   * Use these tests to see displayed stack traces and results messages for failed specs.
+   ***/
+  // describe('non-intercepted failing tests', function () {
 
-      // it("should print '0 rows in table' message in stack trace and spec", function () {
-        // var values = where(function(){/***
-          // ***/
-        // });
+    // it("should print '0 rows in table' message in stack trace and spec", function () {
+      // var values = where(function(){/***
+        // ***/
       // });
-      
     // });
     
-  });
+  // });
   
+  });
+   
 });

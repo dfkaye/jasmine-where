@@ -17,10 +17,10 @@
 //         6 | 6 | 6
 //        ***/
 //        expect(Math.max(a, b)).toBe(c);
-//      })
-//    })
+//      });
+//    });
 //
-//  Table may also contain left and right borders:
+//  Tables may also contain left and right borders:
 //
 //    it('should pass with left and right table borders', function () {
 //      where(function(){/***
@@ -30,22 +30,22 @@
 //        | 6 | 6 | 6 |
 //        ***/
 //        expect(Math.max(a, b)).toBe(c);
-//      })
-//    })
+//      });
+//    });
 //
-//  NOTE: numeric data is automatically coerced to Number type.
+//  Numeric data is automatically coerced to Number type.
 //
 (function () {
-
   /*
    * EXPORT JAZZ
-   */  
-  if (typeof window == "undefined" && typeof global == "object") {
+   */
+  if (typeof global != "undefined") {
     global.where = where;
-  } else if (typeof window != "undefined") {
+  }
+  if (typeof window != "undefined") {
     window.where = where;
   }
-    
+
   /*
    * CONSTANTS
    */
@@ -56,7 +56,7 @@
    * GLOBAL WHERE GRABS IT OFF THE JAZZ ENVIRONMENT
    */
   function where(fn) {
-    return jasmine.getEnv().where(fn)
+    return jasmine.getEnv().where(fn);
   };
   
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -73,10 +73,10 @@
   // returns the data table values array for further use in other expectations.
   //
   ////////////////////////////////////////////////////////////////////////////////////////
-  jasmine.getEnv().constructor.prototype.where = function (fn) {
+  jasmine.getEnv().constructor.prototype.where = function where(fn) {
 
     if (typeof fn != 'function') {
-      throw new Error('where(param) expected param should be a function')
+      throw new Error('where(param) expected param should be a function');
     }
     
     var fnBody = fn.toString().replace(/\s*function[^\(]*[\(][^\)]*[\)][^\{]*{/,'')
@@ -118,7 +118,7 @@
           failedCount += 1;
           item = result.failedExpectations[failedCount - 1];
           message = item.message;
-          item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
+          item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')';
         }
         
       } else if (result.items_) {
@@ -132,7 +132,7 @@
         if (item && !item.passed_) {
           failedCount += 1;
           message = item.message;
-          item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')'
+          item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')';
         }
       }
     }    
@@ -172,12 +172,12 @@
 
         // left border
         if (row[0] === '') {
-          row.shift()
+          row.shift();
         }
         
         // right border
         if (row[row.length - 1] === '') {
-          row.pop()
+          row.pop();
         }
 
         // first row (labels)
@@ -202,19 +202,21 @@
               
               visited[label] = 1;
             }
+            
           }(row));
         }
 
         // data row length
         if (size !== row.length) {
           throw new Error('where() data table has unbalanced row; expected ' + size + 
-                          ' columns but has ' + row.length + ': [' + row.join(', ') + ']');
+                          ' columns but has ' + row.length + ': [' + row.join(', ') + 
+                          ']');
         }
 
         // convert numerics
         for (var t, n = 0; n < row.length; n++) {
-          t = parseFloat(row[n].replace(/\,/g,''))
-          isNaN(t) || (row[n] = t)
+          t = parseFloat(row[n].replace(/\,/g,''));
+          isNaN(t) || (row[n] = t);
         }
         
         rows.push(row);        
