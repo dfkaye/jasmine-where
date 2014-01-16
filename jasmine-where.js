@@ -51,6 +51,7 @@
    */
   var SEP = '|';
   var PAD = ' ' + SEP + ' ';
+  var MESSAGE = 'Passed';
   
   /*
    * GLOBAL WHERE GRABS IT OFF THE JAZZ ENVIRONMENT
@@ -89,19 +90,23 @@
      * {fnBody} is what's left of the original function, mainly the expectation.
      */
     var fnTest = new Function(labels.toString(), fnBody);
-
-    var currentSpec = jasmine.getEnv().currentSpec;
+    var failedCount = 0;
+    var trace = '\n [' + labels.join(PAD) + '] : ';
+    
+    /*
+     * 1.x.x - jasmine.getEnv().currentSpec
+     * 2.x.x - .currentSpec is no longer exposed (leaking state) so use a shim for it with 
+     *          the v2 .result property
+     */ 
+    var currentSpec = jasmine.getEnv().currentSpec || { result : {} };
     var result = /* jasmine 2.x.x. */ currentSpec.result || 
                  /* jasmine 1.x.x. */ currentSpec.results_;
     
-    var failedCount = 0;
-    var trace = '\n [' + labels.join(PAD) + '] : ';
-
     var item, message;
         
     for (var i = 1; i < values.length; ++i) {
     
-      message = 'Passed';
+      message = MESSAGE;
       
       fnTest.apply(currentSpec, values[i]);
 
@@ -113,7 +118,7 @@
         /*
          * jasmine 2.x.x.
          */
-        
+         
         if (failedCount < result.failedExpectations.length) {
           failedCount += 1;
           item = result.failedExpectations[failedCount - 1];
@@ -140,7 +145,7 @@
     // use these in further assertions 
     return values;
   };
-    
+      
   /**
    * private method
    * parseFn() takes a function or string and extracts the data table labels and values.
@@ -231,4 +236,5 @@
     
     return rows;
   }
+  
 }());

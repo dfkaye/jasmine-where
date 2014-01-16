@@ -227,7 +227,7 @@ describe('jasmine-where', function () {
           ***/
           
           // using match for numeric data here
-          expect(Math.max(a, b)).toBe(c);  
+          expect(Math.max(a, b)).toBe(c);
         });
       });
 

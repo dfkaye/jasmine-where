@@ -1,6 +1,6 @@
 {
   "name": "jasmine-where",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "provides where() clause to jasmine, similar to Cucumber scenario-outline examples or Spock where blocks",
   "homepage" : "https://github.com/dfkaye/jasmine-where",
   "author": {

@@ -26,6 +26,7 @@
     return jasmine.getEnv().intercept(fn);
   };
   
+  
   /*
    * Main api method defined on the jazz environment in imitation of the jasmine lib src.
    *
@@ -44,44 +45,52 @@
     /*
      * set up vars for each iteration first
      */
-    var currentSpec = jasmine.getEnv().currentSpec;
     var passing = [];
     var failing = [];
+    
+    /*
+     * 1.x.x - jasmine.getEnv().currentSpec
+     * 2.x.x - .currentSpec is no longer exposed (leaking state) so use a shim for it with 
+     *          the v2 .result property
+     */ 
+    var currentSpec = jasmine.getEnv().currentSpec || { result : {} };
     var result = /* jasmine 2.x.x. */ currentSpec.result || 
                  /* jasmine 1.x.x. */ currentSpec.results_;
     
-    // overwrite result api (temporarily)..
+    // overwrite result api (temporarily)...
     /* jasmine 1.x.x. */
     var addResult = result.addResult;
-    result.addResult = function (results) {
+    addResult && (result.addResult = function (results) {
       if (results.trace) {
         failing.push(results.message);
       } else {
         passing.push(results.message);
         addResult.call(result, results);
       }
-    }
+    });
     
     /* jasmine 2.x.x. */
-    var addExpectationResult = currentSpec.addExpectationResult;
-    currentSpec.addExpectationResult = function (passed, data) {
+    var addExpectationResult = jasmine.Spec.prototype.addExpectationResult;
+    addExpectationResult && (jasmine.Spec.prototype.addExpectationResult = function (passed, data) {
       if (!passed) {
         failing.push(data.message);
       } else {
         passing.push(data.message);
         addExpectationResult.call(passed, data);
       }          
-    };
+    });
     
+    // run expectations
     fn();
     
     // restore result api
-    result.addResult = addResult;
-    currentSpec.addExpectationResult = addExpectationResult;
+    addResult && (result.addResult = addResult);
+    addExpectationResult && (jasmine.Spec.prototype.addExpectationResult = addExpectationResult);
     
     return {
       failing: failing,
       passing: passing
     }
-  }
+  };
+  
 }());
