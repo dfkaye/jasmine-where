@@ -8,8 +8,7 @@
     "email" : "dfkaye@yahoo.com"
   },
   "devDependencies": {
-    "jasmine-node": "1.x.x",
-    "jasmine-intercept": ">= 0.0.9"
+    "jasmine-node": "1.x.x"
   },
   "license": "MIT",
   "main": "./jasmine-where.js",

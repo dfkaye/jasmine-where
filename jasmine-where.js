@@ -52,14 +52,7 @@
   var SEP = '|';
   var PAD = ' ' + SEP + ' ';
   var MESSAGE = 'Passed';
-  
-  /*
-   * GLOBAL WHERE GRABS IT OFF THE JAZZ ENVIRONMENT
-   */
-  function where(fn) {
-    return jasmine.getEnv().where(fn);
-  };
-  
+    
   ////////////////////////////////////////////////////////////////////////////////////////
   // main api method defined on the jazz environment in imitation of the jasmine lib src.
   // 
@@ -74,7 +67,7 @@
   // returns the data table values array for further use in other expectations.
   //
   ////////////////////////////////////////////////////////////////////////////////////////
-  jasmine.getEnv().constructor.prototype.where = function where(fn) {
+  function where(fn) {
 
     if (typeof fn != 'function') {
       throw new Error('where(param) expected param should be a function');
@@ -97,11 +90,12 @@
      * 1.x.x - jasmine.getEnv().currentSpec
      * 2.x.x - .currentSpec is no longer exposed (leaking state) so use a shim for it with 
      *          the v2 .result property
-     */ 
+     */
+
     var currentSpec = jasmine.getEnv().currentSpec || { result : {} };
     var result = /* jasmine 2.x.x. */ currentSpec.result || 
                  /* jasmine 1.x.x. */ currentSpec.results_;
-    
+
     var item, message;
         
     for (var i = 1; i < values.length; ++i) {
@@ -140,6 +134,7 @@
           item.message = trace + '\n [' + values[i].join(PAD) + '] (' + message + ')';
         }
       }
+      
     }    
     
     // use these in further assertions 
@@ -173,58 +168,24 @@
           throw new Error('where() data table has unbalanced columns: ' + row);
         }
         
-        row = row.split(SEP);
-
-        // left border
-        if (row[0] === '') {
-          row.shift();
-        }
+        row = balanceRowData(row);
         
-        // right border
-        if (row[row.length - 1] === '') {
-          row.pop();
-        }
-
-        // first row (labels)
+        // visiting label row
         if (typeof size != 'number') {
-        
+          shouldNotHaveDuplicateLabels(row);
           size = row.length;
-          
-          // no duplicates
-          (function (row) {
-          
-            var visited = {};
-            var label;
-            
-            for (var j = 0; j < row.length; ++j) {
-            
-              label = row[j];
-              
-              if (visited[label]) {
-                throw new Error('where() data table contains duplicate label \'' + label +
-                                '\' in [' + row.join(', ') + ']');
-              }
-              
-              visited[label] = 1;
-            }
-            
-          }(row));
         }
 
         // data row length
         if (size !== row.length) {
-          throw new Error('where() data table has unbalanced row; expected ' + size + 
+          throw new Error('where-data table has unbalanced row; expected ' + size + 
                           ' columns but has ' + row.length + ': [' + row.join(', ') + 
                           ']');
         }
 
-        // convert numerics
-        for (var t, n = 0; n < row.length; n++) {
-          t = parseFloat(row[n].replace(/\,/g,''));
-          isNaN(t) || (row[n] = t);
-        }
-        
-        rows.push(row);        
+        convertNumerics(row);
+
+        rows.push(row);         
       }
     }
     
@@ -237,4 +198,63 @@
     return rows;
   }
   
+  
+  
+  function balanceRowData(row) {
+  
+    var cells = row.split(SEP);
+    var left  = cells[0] === '';    //left border
+    var right = cells[cells.length - 1] === '';    //right border
+    
+    if (left != right) {
+      throw new Error('where-data table borders are not balanced: ' + row);
+    }
+    
+    if (left) {
+      cells.shift();
+    }
+
+    if (right) {
+      cells.pop();
+    }
+      
+    return cells;
+  }
+  
+  
+  /*
+   * @private 
+   * @method shouldNotHaveDuplicateLabels() checks that row of data contains no duplicated 
+   *  data values - mainly used for checking column headers (a,b,c vs. a,b,b).
+   * @param row array of values.
+   */
+  function shouldNotHaveDuplicateLabels(row) {
+    for (var label, visited = {}, j = 0; j < row.length; j += 1) {
+    
+      label = row[j];
+
+      if (visited[label]) {
+        throw new Error('where-data table contains duplicate label \'' + label +
+                        '\' in [' + row.join(', ') + ']');
+      }
+      
+      visited[label] = 1;
+    }
+  }
+  
+  /*
+   * @private 
+   * @method convertNumerics() replaces row data with numbers if value is numeric, or a 
+   *  'quoted' numeric string.
+   * @param row array of values.
+   */
+  function convertNumerics(row) {
+    for (var t, i = 0; i < row.length; i += 1) {
+    
+      t = parseFloat(row[i].replace(/\'|\"|\,/g,''));
+      
+      isNaN(t) || (row[i] = t);
+    }
+  }
+ 
 }());

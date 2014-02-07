@@ -1,7 +1,11 @@
-jasmine-where
-=============
+# DEPRECATION NOTICE [7 JAN 2014]
+
+__jasmine-where has been superseded by [where.js](https://github.com/dfkaye/where.js)__
 
 [![Build Status](https://travis-ci.org/dfkaye/jasmine-where.png)](https://travis-ci.org/dfkaye/jasmine-where)
+
+jasmine-where
+=============
 
 Provides a `where()` clause for data-table support to the 
 [Jasmine BDD test framework](https://github.com/pivotal/jasmine), similar to 

@@ -1,19 +1,26 @@
 // jasmine-where.spec.js
 
 describe('jasmine-where', function () {
-    
+  //console.log('FAILING - MIGRATE TO FN, CTX API, PASSING INTERCEPT ON CTX');
   describe('where-fn', function () {
-  
-    it('should be on jasmine env', function() {
-      expect(typeof jasmine.getEnv().where).toBe('function');
-    });
-    
+      
     it('should be global', function() {
       expect(typeof where).toBe('function');
     });
       
     it('should accept one argument', function () {
       expect(where.length).toBe(1);
+    });
+    
+    it('should accept context argument', function () {
+      where(function(){/*** 
+          a  |  b  |  c
+          1  |  2  |  3
+        ***/
+        //console.log(strategy);
+        expect(a + b).toBe(c);
+      }, { strategy: 'jasmine', expect: expect });
+        
     });
     
     it('should accept only a function', function () {
@@ -55,6 +62,17 @@ describe('jasmine-where', function () {
       });
     });
     
+    it('should throw if borders not balanced', function() {
+      expect(function () {
+        where(function(){/*** 
+          | a  |  b  |  c 
+          | test | arg | testarg
+          ***/
+          expect(a + b).toBe(c);
+        });
+      }).toThrow();
+    });
+    
     it('should ignore empty rows', function () {
       where(function(){/*** 
           a  |  b  |  c
@@ -68,15 +86,14 @@ describe('jasmine-where', function () {
     it('should pass with data containing various padding', function () {
       expect(function () {
         where(function(){/*** 
-          a | b|c
-           6|4 |10
-        ***/
-        
-        // I DETECT A USABILITY ISSUE WITH Number() for every input     
-        expect(Number(a) + Number(b)).toBe(Number(c))
-        
+            a | b|c
+             6|4 |10
+          ***/
+          
+          //I DETECT A USABILITY ISSUE WITH Number() for every input     
+          expect(Number(a) + Number(b)).toBe(Number(c))
         });
-       }).not.toThrow();
+      }).not.toThrow();
     });
     
     it('should convert numeric data automatically', function () {
@@ -93,7 +110,7 @@ describe('jasmine-where', function () {
                 6     |    4     |   10.0   |  3
                 8.030 |   -2.045 |    5.985 |  4
             1,000.67  | 1345     | 2345.67  |  6
-            
+                5f |      5 | 10f | 1
           ***/
           
           // using precisions for famous 5.985 vs 5.98499999999999999999999999 bugz
