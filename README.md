@@ -217,12 +217,12 @@ or simply
 
     npm test
 
-rawgithub test page
+rawgit test page
 -------------------
 
 __The *jasmine2* browser test page is viewable on 
-<a href='//rawgithub.com/dfkaye/jasmine-where/master/test/browser-suite.html' 
-   target='_new' title='opens in new tab or window'>rawgithub</a>.__
+<a href='//rawgit.com/dfkaye/jasmine-where/master/test/browser-suite.html' 
+   target='_new' title='opens in new tab or window'>rawgit</a>.__
 
 testem
 ------
